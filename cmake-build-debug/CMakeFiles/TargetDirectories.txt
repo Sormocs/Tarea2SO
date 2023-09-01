@@ -1,0 +1,4 @@
+/home/markorovi/Desktop/Principios Operativos (II 2023)/Tarea2SO/cmake-build-debug/CMakeFiles/Client.dir
+/home/markorovi/Desktop/Principios Operativos (II 2023)/Tarea2SO/cmake-build-debug/CMakeFiles/Server.dir
+/home/markorovi/Desktop/Principios Operativos (II 2023)/Tarea2SO/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/markorovi/Desktop/Principios Operativos (II 2023)/Tarea2SO/cmake-build-debug/CMakeFiles/rebuild_cache.dir
