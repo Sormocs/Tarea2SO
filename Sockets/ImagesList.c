@@ -28,7 +28,11 @@ void addImageNode(struct ImageNode **head, const char *name) {
 
     long file_size;
     char *image_data;
-    FILE* file = fopen(name, "rb"); //AQUI HAY QUE CAMBIAR CUANDO SE PIDA EL NAME DE LA IMG
+
+    char full_path[128]; // Adjust the size as needed
+    snprintf(full_path, sizeof(full_path), "Sockets/To Send/%s", name);
+
+    FILE* file = fopen(full_path, "rb"); //AQUI HAY QUE CAMBIAR CUANDO SE PIDA EL NAME DE LA IMG
 
     if (file) {
         fseek(file, 0, SEEK_END);
@@ -131,4 +135,21 @@ void mergeSort(struct ImageNode** headRef) {
     mergeSort(&right);
 
     *headRef = merge(left, right);
+}
+
+void forNames(const struct ImageNode *head, void (*filenameCallback)(const char *)) {
+    const struct ImageNode *current = head;
+
+    while (current != NULL) {
+        // Call the callback function with the filename
+        filenameCallback(current->name);
+        current = current->next;
+    }
+}
+
+// Example callback function to process each filename
+void processFilename(const char *filename) {
+    printf("Processing file: %s\n", filename);
+
+    // Add your logic here to process the filename
 }

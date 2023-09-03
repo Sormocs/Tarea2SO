@@ -6,12 +6,18 @@
 #include <unistd.h>
 #include "ImagesList.h"
 
-
 #define SERVER_IP "127.0.0.1"
+
+
+
+
 
 void send_image(int socket, const char *filename) {
 
-    FILE* file = fopen(filename, "rb"); //AQUI HAY QUE CAMBIAR CUANDO SE PIDA EL NAME DE LA IMG
+    char full_path[128]; // Adjust the size as needed
+    snprintf(full_path, sizeof(full_path), "Sockets/To Send/%s", filename);
+    FILE* file = fopen(full_path, "rb"); //AQUI HAY QUE CAMBIAR CUANDO SE PIDA EL NAME DE LA IMG
+
 
     if (file) {
         fseek(file, 0, SEEK_END);
@@ -29,7 +35,7 @@ void send_image(int socket, const char *filename) {
         send(socket, image_data, file_size, 0);
 
 
-        send(socket, "TEST", strlen("TEST")+1, 0);
+        send(socket, filename, strlen(filename)+1, 0);
 
         free(image_data);
     } else {
@@ -58,10 +64,7 @@ int read_Port() {
     return server_port;
 }
 
-int main() {
-
-    struct ImageNode *imageList = NULL;
-
+void sendInformation (const char *name) {
     int SERVER_PORT = read_Port();
 
     int client_socket = socket(AF_INET, SOCK_STREAM, 0);
@@ -82,21 +85,38 @@ int main() {
 
     printf("Conexión al servidor establecida\n");
 
-    // Enviar una imagen al servidor
-    //send_image(client_socket, "Sockets/To Send/image.png");
+    send_image(client_socket, name);
 
-    addImageNode(&imageList, "Sockets/To Send/image3.png");
-    addImageNode(&imageList, "Sockets/To Send/image2.png");
-    addImageNode(&imageList, "Sockets/To Send/image1.png");
+    close(client_socket);
+}
 
-    printImageList(imageList);
+int main() {
+    int flag = 1;
+    char input[20];
+    struct ImageNode *imageList = NULL;
 
-    printf("---------------------------------\n");
-    mergeSort(&imageList);
-    printImageList(imageList);
+    while (flag) {
+        printf("Type the name of the image you want to send. Enter 'EXIT' to send the images to the server.\n" );
+        scanf("%s", input);
+
+        if (strcmp(input, "EXIT") == 0) {
+            printf("Sending images\n");
+            mergeSort(&imageList);
+            flag = 0;
+        } else {
+            addImageNode(&imageList, input);
+        }
+    }
+
+    while (imageList != NULL) {
+        sendInformation(imageList->name);
+        imageList = imageList->next;
+    }
 
     freeImageList(imageList);
-    close(client_socket);
 
     return 0;
 }
+
+
+

@@ -62,6 +62,7 @@ void save_image(const char *filename, const char *image_data, size_t data_size) 
     // Create the "Received" folder if it doesn't exist
     mkdir("Sockets/Received", 0777);
 
+
     // Construct the full path to the image file within the "Received" folder
     char full_path[128]; // Adjust the size as needed
     snprintf(full_path, sizeof(full_path), "Sockets/Received/%s", filename);
@@ -102,6 +103,13 @@ int main() {
 
     int SERVER_PORT = read_Port();
 
+    char input[10];
+    scanf("%s", input);
+
+    if (strcmp(input, "START") != 0) {
+        printf("Stopping the server...\n");
+        exit(0);
+    }
 
     int server_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (server_socket == -1) {
@@ -126,11 +134,11 @@ int main() {
 
     printf("Server listening on port %d\n", SERVER_PORT);
 
-//    pthread_t input_thread;
-//    if (pthread_create(&input_thread, NULL, console_input, NULL) != 0) {
-//        perror("Error creating input thread");
-//        exit(EXIT_FAILURE);
-//    }
+    pthread_t input_thread;
+    if (pthread_create(&input_thread, NULL, console_input, NULL) != 0) {
+        perror("Error creating input thread");
+        exit(EXIT_FAILURE);
+    }
 
 
     while (1) {
@@ -150,14 +158,9 @@ int main() {
         long file_size;
         ssize_t bytes_received = recv(client_socket, &file_size, sizeof(long), 0);
 
-//        char filename[1024];
-//        ssize_t bytes_received = recv(client_socket, filename, sizeof(filename), 0);
         if (bytes_received > 0) {
 
 
-            // Recibir tamaño de la imagen
-//            long file_size;
-//            bytes_received = recv(client_socket, &file_size, sizeof(long), 0);
             printf("RECEIVED FILE SIZE: %ld\n", file_size);
 
             if(bytes_received < 0){
@@ -179,17 +182,16 @@ int main() {
 
             filename[bytes_received] = '\0';
 
-            printf("RECEIVED FILENAME: %s\n", filename);
-
             //imprimir nombre de la imagen
             printf("FILENAME: %s\n", filename);
 
+
+
             //Salvar imagen en server/images/filename
-            save_image("ayuda.png", image_data, file_size);
-            printf("IMAGE SAVED\n");
+            save_image(filename, image_data, file_size);
+            //printf("IMAGE SAVED\n");
 
             free(image_data);
-
         }
 
         close(client_socket);
