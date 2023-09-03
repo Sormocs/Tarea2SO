@@ -6,6 +6,8 @@
 #include <sys/stat.h>
 #include <pthread.h>
 #include <string.h>
+#include "Algorithm/image_handler.c"
+#include "Algorithm/equalization.c"
 #include <stdbool.h>
 
 
@@ -95,6 +97,27 @@ void *console_input(void *arg) {
 
         }
     }
+}
+
+void Process_Img(char* filename){
+
+    char path[128]; // Adjust the size as needed
+    snprintf(path, sizeof(path), "Sockets/Received/%s", filename);
+
+    printf("Print de prueba\n");
+    ImageData *image = load_image(path);
+    if (!image->data){
+        printf("Failed to load image %s\n",filename);
+    }
+
+    unsigned char * new_data = Apply_Equalization(image->data,image->width,image->height,image->channels);
+
+    ImageData *newImage;
+    newImage = image;
+    newImage->data = new_data;
+    Save_Image(newImage,filename);
+
+    printf("Image Saved\n");
 }
 
 int main() {
@@ -190,6 +213,8 @@ int main() {
             //Salvar imagen en server/images/filename
             save_image(filename, image_data, file_size);
             //printf("IMAGE SAVED\n");
+
+            Process_Img(filename);
 
             free(image_data);
         }
