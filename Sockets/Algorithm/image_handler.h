@@ -9,6 +9,6 @@ typedef struct {
 } ImageData;
 
 ImageData * load_image(const char* path);
-void Save_Image(ImageData *image);
+void Save_Image(ImageData *image,const char* filename);
 
 #endif

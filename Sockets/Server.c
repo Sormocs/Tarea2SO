@@ -101,10 +101,11 @@ void *console_input(void *arg) {
 
 void Process_Img(char* filename){
 
+
     char path[128]; // Adjust the size as needed
     snprintf(path, sizeof(path), "Sockets/Received/%s", filename);
 
-    printf("Print de prueba\n");
+    printf("Cargando imagen...\n");
     ImageData *image = load_image(path);
     if (!image->data){
         printf("Failed to load image %s\n",filename);

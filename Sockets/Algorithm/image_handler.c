@@ -26,7 +26,7 @@ ImageData * load_image(const char *path){
     return image;
 }
 
-void Save_Image(ImageData *image){
+void Save_Image(ImageData *image,const char* filename){
 
     int r,g,b;
     for(int i = 0; i < image->width*image->height * 3; i+=3){
@@ -43,13 +43,18 @@ void Save_Image(ImageData *image){
         }
     }
 
+    char path[128]; // Adjust the size as needed
     if (r > g && r > b){
-        stbi_write_png("./Output/Red/output_equ.png", image->width, image->height, image->channels, image->data, image->width * image->channels);
+        snprintf(path, sizeof(path), "Sockets/Algorithm/Output/Red/%s", filename);
+        stbi_write_png(path, image->width, image->height, image->channels, image->data, image->width * image->channels);
     } else if (g > r && g > b){
-        stbi_write_png("./Output/Green/output_equ.png", image->width, image->height, image->channels, image->data, image->width * image->channels);
+        snprintf(path, sizeof(path), "Sockets/Algorithm/Output/Green/%s", filename);
+        stbi_write_png(path, image->width, image->height, image->channels, image->data, image->width * image->channels);
     } else if (b > r && b > g){
-        stbi_write_png("./Output/Blue/output_equ.png", image->width, image->height, image->channels, image->data, image->width * image->channels);
+        snprintf(path, sizeof(path), "Sockets/Algorithm/Output/Blue/%s", filename);
+        stbi_write_png(path, image->width, image->height, image->channels, image->data, image->width * image->channels);
     } else {
-        stbi_write_png("./Output/Undefined/output_equ.png", image->width, image->height, image->channels, image->data, image->width * image->channels);
+        snprintf(path, sizeof(path), "Sockets/Algorithm/Output/Undefined/%s", filename);
+        stbi_write_png(path, image->width, image->height, image->channels, image->data, image->width * image->channels);
     }
 }
